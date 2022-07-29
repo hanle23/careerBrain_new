@@ -16,9 +16,15 @@ def fill_box(skill, driver):
         for char in skill:
             textBox.send_keys(char)
             textBox.send_keys(Keys.RETURN)
-        buttons = WebDriverWait(driver, 100).until(
+
+        WebDriverWait(driver, 100).until(
+            EC.invisibility_of_element_located(
+                (By.CLASS_NAME, "svelte-fvoblx"))
+        )
+        buttons = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.CLASS_NAME, "options")))
-        input("Stop Here")
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div > button")))
         buttons = buttons.find_elements(By.TAG_NAME, 'button')
         for button in buttons:
             button.send_keys(Keys.RETURN)
@@ -40,19 +46,18 @@ def process_skill(test_option, driver):
         WebDriverWait(driver, 100).until(
             EC.presence_of_element_located((By.CLASS_NAME, "min-h-screen"))
         ).find_elements(By.LINK_TEXT, "Discover roles based on my skills")[0].click()
+        mainScreen = WebDriverWait(driver, 100).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "min-h-screen"))
+        )
+        # TODO: Need to implement a checker to replace input for waiting until all element is loaded
+        input("stop here")
         WebDriverWait(driver, 100).until(
             EC.invisibility_of_element_located(
                 (By.CLASS_NAME, "svelte-fvoblx"))
         )
-        discovers = WebDriverWait(driver, 100).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "min-h-screen"))
-        ).find_elements(By.CLASS_NAME, "carousel")
-        list_of_discover = []
-        for item in discovers:
-            list_of_discover.append(item.text)
-        input("Stop here")
-        UTIL.store_to_excel("SkillResult.csv",
-                            test_option[0], list_of_discover, not_found)
+        discovers = mainScreen.find_elements(By.CLASS_NAME, "carousel")
+        UTIL.extract_from_tuple(discovers)
+        print(not_found)
 
     finally:
         pass
@@ -64,8 +69,7 @@ def main(wait=True):
     routines = int(input("Number of test rountines:"))
     url = 'https://careerbrain-uat.herokuapp.com/skills'
     driver = webdriver.Chrome(
-        "/Users/hanle/Documents/Projects/chromedriver"
-    )
+        r"C:\Users\hanlecs\Documents\Projects\chromedriver.exe")
     driver.get(url)
     for _ in range(routines):
         test_option = random.choice(test_list)
