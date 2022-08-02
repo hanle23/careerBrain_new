@@ -16,10 +16,10 @@ def extract_file(name):
 
 
 def extract_from_tuple(selenium_object_list):
-    temp = []
+    result = []
     for object in selenium_object_list:
-        temp.append([object.text])
-    print(len(temp))
+        # TODO: modifying string data in each object where if length is 2, first object is the actual object, and second is trending
+        print(type(object.text))
 
 
 def store_to_excel(file_name, test_ID, *args):

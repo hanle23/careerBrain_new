@@ -5,17 +5,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-
+import time
 import random
 
 
 def fill_box(skill, driver):
     try:
-        textBox = driver.find_element(By.XPATH, '//input[1]')
+        textBox = driver.find_element(By.CLASS_NAME, 'addSkills')
         textBox.clear()
         for char in skill:
             textBox.send_keys(char)
-            textBox.send_keys(Keys.RETURN)
 
         WebDriverWait(driver, 100).until(
             EC.invisibility_of_element_located(
