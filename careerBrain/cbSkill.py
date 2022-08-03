@@ -15,7 +15,7 @@ def fill_box(skill, driver):
         textBox.clear()
         for char in skill:
             textBox.send_keys(char)
-
+        time.sleep(2)
         WebDriverWait(driver, 100).until(
             EC.invisibility_of_element_located(
                 (By.CLASS_NAME, "svelte-fvoblx"))
@@ -55,11 +55,16 @@ def process_skill(test_option, driver):
                 (By.CLASS_NAME, "svelte-fvoblx"))
         )
         discovers = mainScreen.find_elements(By.CLASS_NAME, "carousel")
-        UTIL.extract_from_tuple(discovers)
-        print(not_found)
-
-    finally:
+        result = UTIL.extract_from_tuple(discovers)
+        result.append(not_found)
+    except TimeoutException:
+        # TODO: Implement a timeout problem notification
         pass
+    except NoSuchElementException:
+        # TODO: Implement a NoSuchElement problem notification
+        pass
+    finally:
+        return result
 
 
 def main(wait=True):
@@ -68,11 +73,11 @@ def main(wait=True):
     routines = int(input("Number of test rountines:"))
     url = 'https://careerbrain-uat.herokuapp.com/skills'
     driver = webdriver.Chrome(
-        r"C:\Users\hanlecs\Documents\Projects\chromedriver.exe")
+        r"/Users/hanle/Documents/Projects/chromedriver")
     driver.get(url)
     for _ in range(routines):
         test_option = random.choice(test_list)
-        process_skill(test_option, driver)
+        result = process_skill(test_option, driver)
 
 
 if __name__ == "__main__":
