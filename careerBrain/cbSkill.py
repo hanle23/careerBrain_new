@@ -78,6 +78,7 @@ def main(wait=True):
     for _ in range(routines):
         test_option = random.choice(test_list)
         result = process_skill(test_option, driver)
+        print(result)
 
 
 if __name__ == "__main__":
